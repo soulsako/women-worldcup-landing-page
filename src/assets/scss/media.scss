@@ -1,0 +1,90 @@
+// mq($width, [$type])
+//
+// Shorthand for adding mobile first media queries, use the second parameter if
+// you require a none mobile first breakpoint
+//
+// Example use in stylesheet
+//
+// @include mq('medium')
+//
+// @include mq('medium', 'max')
+//
+// $width - String: 'small', 'medium', 'large'
+// $type  - String: Default is mobile first, you can use 'max' to reverse this
+//
+// Styleguide Sass.mixins.mq
+
+$breakpoints: (
+  'small': 765px,
+  'medium': 960px,
+  'large':  1440px
+);
+
+@mixin mq($width, $type: min) {
+  @if map_has_key($breakpoints, $width) {
+    $width: map_get($breakpoints, $width);
+
+    @if $type == max {
+      $width: $width - 1px;
+    }
+
+    @media only screen and (#{$type}-width: $width) {
+      @content;
+    }
+  }
+}
+
+// z($name)
+//
+// Takes care of managing z-index of various layers by using names instead of numbers
+//
+// Example: z-index: z('header');
+//
+// $name - String: name of layout defined in $z-indexes
+//
+// Styleguide Sass.mixins.z
+
+@function z($name) {
+  @if index($z-indexes, $name) {
+    @return (length($z-indexes) - index($z-indexes, $name)) + 1000;
+  }
+
+  @else {
+    @warn 'There is no item "#{$name}" in this list; choose one of: #{$z-indexes}';
+    @return null;
+  }
+}
+
+$z-indexes: (
+  'top',
+  'middle',
+  'bottom'
+);
+
+// Target only mobile screen sizes
+@mixin mobile-only {
+  @media screen and (max-width: 766px) {
+    @content;
+  }
+}
+
+// Target tablet screen sizes and above
+@mixin tablet {
+  @media screen and (min-width: 767px) {
+    @content;
+  }
+}
+
+// Target only tablet screen sizes
+@mixin tablet-only {
+  @media screen and (min-width: 767px) and (max-width: 1024px) {
+    @content;
+  }
+}
+
+// Target desktop screen sizes
+@mixin desktop {
+  @media screen and (min-width: 1025px) {
+    @content;
+  }
+}
