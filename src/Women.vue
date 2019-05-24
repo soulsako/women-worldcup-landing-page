@@ -1,14 +1,17 @@
 <template>
-  <div class="women">
+  <div class="women" :style="{backgroundColor: backgroundColor}">
     <div class="women__inner">
       <div class="women__textbox">
         <p>{{text}}</p>
         <p>{{textTwo}}</p>
       </div>
       <div class="women__countrybox">
-        <div class="women__countrybox-country" v-for="(country, index) in countries" :key="index">
+        <div class="women__countrybox-country" v-for="(country, index) in data" :key="index">
           <a href="/" class="women__countrybox-flag">
-            <img :src="country.img" alt="" class="women__countrybox-img">
+            <picture class="women__countrybox-img">
+              <source :srcset="country.img" media="(max-width: 37.5em)">
+              <img :src="country.img2" alt="Country Logos">
+            </picture>
           </a>
           <p class="women__countrybox-text">{{ country.text}}</p>  
         </div>
@@ -19,7 +22,12 @@
 
 <script>
   export default {
-    props: ['text', 'textTwo', 'countries']
+    props: ['text', 'textTwo', 'data', 'country'], 
+    computed: {
+      backgroundColor(){
+        return this.country ? '#f2f2f2' : '#fff'
+      }
+    }
   }
 </script>
 
@@ -27,8 +35,9 @@
 @import './assets/scss/media.scss';
   .women {
     padding: 2.5rem;
-    background-color: #f2f2f2;
-
+    @include desktop {
+          padding: 5rem 20rem;
+        }
     &__textbox {
       display: flex;
       justify-content: space-between;
@@ -40,6 +49,14 @@
         font-size: 1.3rem;
         letter-spacing: 3.38px;
         line-height: 1.3rem;
+        @include desktop {
+          font-size: 2.8rem;
+          letter-spacing: 7.28px;
+          line-height: 3rem;
+        }
+        &:last-child{
+          text-decoration: underline;
+        }
       }
     }
 
@@ -47,24 +64,22 @@
       display: flex;
       overflow-x: scroll;
       align-items: center;
-      justify-content: space-between;
       padding: 1.5rem 0;
       text-transform: uppercase;
-      width: 100vw;
-
+      @include desktop {
+        padding: 3rem 0;
+      }
       &-country {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 10rem;
-      min-height: 10rem;
-      border-radius: 20rem;
+      &:not(:last-child){
+        margin-right: 5rem;
+        }
       }
       &-flag {
-      width: 100%;
-      height: 100%;
-      margin-bottom: 1rem;
-      object-fit: cover;
+      margin-bottom: .5rem;
+      object-fit: contain;
       }
       &-img {
       display: block;
@@ -75,6 +90,11 @@
       font-size: 1.2rem;
       line-height: 1.8rem;
       letter-spacing: 3.12px;
+      @include desktop {
+          font-size: 2rem;
+          line-height: 3.2rem;
+          letter-spacing: 5.2px;
+        }
       }
     }
   }
